@@ -5,7 +5,7 @@ namespace App\Service\VehicleBuilder\Builder;
 use App\Entity\Vehicle;
 use App\Service\VehicleBuilder\Contract\VehicleBuilderInterface;
 
-final class VehicleBuilder implements VehicleBuilderInterface
+final class JaguarBuilder implements VehicleBuilderInterface
 {
     private Vehicle $vehicle;
 
