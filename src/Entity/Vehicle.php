@@ -3,13 +3,14 @@
 namespace App\Entity;
 
 use App\Repository\VehicleRepository;
+use App\Service\CloneableService\Contract\CloneableInterface;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: VehicleRepository::class)]
-class Vehicle
+class Vehicle implements CloneableInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
@@ -17,82 +18,44 @@ class Vehicle
     #[ORM\CustomIdGenerator(UuidGenerator::class)]
     private Uuid $id;
 
-    #[ORM\Column(length: 255)]
-    private ?string $manufacturer = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $model = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $vin = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $engineType = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $transmission = null;
-
-    #[ORM\Column]
-    private ?int $doors = null;
-
-    #[ORM\Column]
-    private ?int $seats = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $driveType = null;
-
-    #[ORM\Column]
-    private ?int $horsePower = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $color = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $fuelType = null;
-
     #[ORM\Column]
     private ?DateTimeImmutable $createdAt = null;
 
-    /**
-     * @param string|null $manufacturer
-     * @param string|null $model
-     * @param string|null $vin
-     * @param string|null $engineType
-     * @param string|null $transmission
-     * @param int|null $doors
-     * @param int|null $seats
-     * @param string|null $driveType
-     * @param int|null $horsePower
-     * @param string|null $color
-     * @param string|null $fuelType
-     */
+    #[ORM\OneToOne(inversedBy: 'vehicle', cascade: ['persist', 'remove'])]
+    private ?Manual $manual = null;
+
     public function __construct(
-        null|string $manufacturer = null,
-        null|string $model =null,
-        null|string $vin = null,
-        null|string $engineType =null,
-        null|string $transmission =null,
-        null|int $doors = null,
-        null|int $seats = null,
-        null|string $driveType = null,
-        null|int $horsePower = null,
-        null|string $color = null,
-        null|string $fuelType = null
-    )
-    {
-        $this->manufacturer = $manufacturer;
-        $this->model = $model;
-        $this->vin = $vin;
-        $this->engineType = $engineType;
-        $this->transmission = $transmission;
-        $this->doors = $doors;
-        $this->seats = $seats;
-        $this->driveType = $driveType;
-        $this->horsePower = $horsePower;
-        $this->color = $color;
-        $this->fuelType = $fuelType;
+        #[ORM\Column(length: 255)]
+        private ?string $manufacturer = null,
+        #[ORM\Column(length: 255)]
+        private ?string $model = null,
+        #[ORM\Column(length: 255)]
+        private ?string $vin = null,
+        #[ORM\Column(length: 255)]
+        private ?string $engineType = null,
+        #[ORM\Column(length: 255)]
+        private ?string $transmission = null,
+        #[ORM\Column]
+        private ?int $doors = null,
+        #[ORM\Column]
+        private ?int $seats = null,
+        #[ORM\Column(length: 255)]
+        private ?string $driveType = null,
+        #[ORM\Column]
+        private ?int $horsePower = null,
+        #[ORM\Column(length: 255)]
+        private ?string $color = null,
+        #[ORM\Column(length: 255)]
+        private ?string $fuelType = null
+    ) {
         $this->createdAt = new DateTimeImmutable();
     }
+
+    public function __clone(): void
+    {
+        $this->manual = clone $this->manual;
+    }
+
     public function getId(): null|Uuid
     {
         return $this->id;
@@ -238,6 +201,18 @@ class Vehicle
     public function setCreatedAt(DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getManual(): ?Manual
+    {
+        return $this->manual;
+    }
+
+    public function setManual(?Manual $manual): static
+    {
+        $this->manual = $manual;
 
         return $this;
     }

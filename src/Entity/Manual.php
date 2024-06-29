@@ -3,13 +3,14 @@
 namespace App\Entity;
 
 use App\Repository\ManualRepository;
+use App\Service\CloneableService\Contract\CloneableInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: ManualRepository::class)]
-class Manual
+class Manual implements CloneableInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
@@ -68,6 +69,16 @@ class Manual
 
     public function setVehicle(?Vehicle $vehicle): static
     {
+        // unset the owning side of the relation if necessary
+        if ($vehicle === null && $this->vehicle !== null) {
+            $this->vehicle->setManual(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($vehicle !== null && $vehicle->getManual() !== $this) {
+            $vehicle->setManual($this);
+        }
+
         $this->vehicle = $vehicle;
 
         return $this;
