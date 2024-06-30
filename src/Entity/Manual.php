@@ -70,7 +70,7 @@ class Manual implements CloneableInterface
     public function setVehicle(?Vehicle $vehicle): static
     {
         // unset the owning side of the relation if necessary
-        if (!$vehicle instanceof Vehicle && $this->vehicle instanceof Vehicle) {
+        if (! $vehicle instanceof Vehicle && $this->vehicle instanceof Vehicle) {
             $this->vehicle->setManual(null);
         }
 
