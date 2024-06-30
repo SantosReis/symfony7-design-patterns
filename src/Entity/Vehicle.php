@@ -16,7 +16,7 @@ class Vehicle implements CloneableInterface
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\Column(type: 'uuid', unique: true)]
     #[ORM\CustomIdGenerator(UuidGenerator::class)]
-    private Uuid $id;
+    private Uuid $uuid;
 
     #[ORM\Column]
     private ?DateTimeImmutable $createdAt = null;
@@ -58,7 +58,7 @@ class Vehicle implements CloneableInterface
 
     public function getId(): null|Uuid
     {
-        return $this->id;
+        return $this->uuid;
     }
 
     public function getManufacturer(): ?string

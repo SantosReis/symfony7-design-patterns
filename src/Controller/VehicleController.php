@@ -26,22 +26,21 @@ class VehicleController extends AbstractController
     public function builderDesignPattern(): Response
     {
         $vehicleDirector = new VehicleDirector();
-        $landRover = $vehicleDirector->makeLandRover($this->landRoverBuilder);
+        $vehicle = $vehicleDirector->makeLandRover($this->landRoverBuilder);
         $jaguar = $vehicleDirector->makeJaguarFtypeR75Coupe($this->jaguarBuilder);
-        dd($landRover, $jaguar);
+        dd($vehicle, $jaguar);
     }
 
     #[Route(path: '/vehicle/clone', name: 'vehicle_clone')]
     public function PrototypeDesignPattern(): Response
     {
         $vehicleDirector = new VehicleDirector();
-        $jaguar = $vehicleDirector->makeJaguarFtypeR75Coupe($this->jaguarBuilder);
+        $vehicle = $vehicleDirector->makeJaguarFtypeR75Coupe($this->jaguarBuilder);
         $jaguarManual = new Manual(title: 'jaguar manual', content: 'open car, get in and turn the key.');
-        $jaguar->setManual($jaguarManual);
+        $vehicle->setManual($jaguarManual);
 
-        $clonedJag = clone $jaguar;
+        $clonedJag = clone $vehicle;
 
-        dd($jaguar, $clonedJag);
+        dd($vehicle, $clonedJag);
     }
-
 }

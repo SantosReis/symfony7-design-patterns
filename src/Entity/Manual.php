@@ -16,7 +16,7 @@ class Manual implements CloneableInterface
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\Column(type: 'uuid', unique: true)]
     #[ORM\CustomIdGenerator(UuidGenerator::class)]
-    private Uuid $id;
+    private Uuid $uuid;
 
     #[ORM\OneToOne(mappedBy: 'manual', cascade: ['persist', 'remove'])]
     private ?Vehicle $vehicle = null;
@@ -35,7 +35,7 @@ class Manual implements CloneableInterface
 
     public function getId(): null|Uuid
     {
-        return $this->id;
+        return $this->uuid;
     }
 
     public function getTitle(): ?string
@@ -70,12 +70,12 @@ class Manual implements CloneableInterface
     public function setVehicle(?Vehicle $vehicle): static
     {
         // unset the owning side of the relation if necessary
-        if ($vehicle === null && $this->vehicle !== null) {
+        if (!$vehicle instanceof Vehicle && $this->vehicle instanceof Vehicle) {
             $this->vehicle->setManual(null);
         }
 
         // set the owning side of the relation if necessary
-        if ($vehicle !== null && $vehicle->getManual() !== $this) {
+        if ($vehicle instanceof Vehicle && $vehicle->getManual() !== $this) {
             $vehicle->setManual($this);
         }
 

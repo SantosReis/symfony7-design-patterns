@@ -26,21 +26,20 @@ class MailerFacade
         string $template,
         array $context = [],
     ): void {
-        $email = (new TemplatedEmail())
+        $templatedEmail = (new TemplatedEmail())
             ->from($from)
             ->to($to)
             ->subject($subject)
             ->htmlTemplate($template)
             ->context($context);
 
-        $this->send($email);
+        $this->send($templatedEmail);
     }
 
     public function sendWelcomeEmail(
         string $recipient,
         string $name
     ): void {
-
         $this->sendTemplatedEmail(
             from: self::APPLICATION_NO_REPLY_EMAIL_ADDRESS,
             to: $recipient,
@@ -55,12 +54,12 @@ class MailerFacade
     /**
      * @throws TransportExceptionInterface
      */
-    private function send(TemplatedEmail $email): void
+    private function send(TemplatedEmail $templatedEmail): void
     {
         try {
-            $this->mailer->send($email);
-        } catch (TransportExceptionInterface $exception) {
-            throw new $exception();
+            $this->mailer->send($templatedEmail);
+        } catch (TransportExceptionInterface $transportException) {
+            throw new $transportException();
         }
     }
 }
